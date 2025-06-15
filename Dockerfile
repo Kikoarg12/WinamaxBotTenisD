@@ -1,33 +1,28 @@
 FROM python:3.10-slim
 
-# Instala dependencias necesarias del sistema para Playwright
+# Instalación de dependencias del sistema
 RUN apt-get update && apt-get install -y \
     wget \
     unzip \
     curl \
-    fonts-liberation \
     libnss3 \
     libatk-bridge2.0-0 \
     libxss1 \
     libasound2 \
     libgbm1 \
     libgtk-3-0 \
-    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Crea y selecciona el directorio de trabajo
-WORKDIR /app
+# Instala Playwright + navegadores
+RUN pip install playwright \
+    && playwright install --with-deps chromium
 
-# Copia todos los archivos del proyecto
+# Copia el código
+WORKDIR /app
 COPY . .
 
-# Instala las dependencias de Python
-RUN pip install --upgrade pip
+# Instala requirements (por si lo tienes aparte)
 RUN pip install -r requirements.txt
 
-# Instala los navegadores de Playwright mediante script externo
-COPY build.sh .
-RUN chmod +x build.sh && ./build.sh
-
-# Comando para ejecutar la aplicación
+# Ejecuta tu script
 CMD ["python", "main.py"]
