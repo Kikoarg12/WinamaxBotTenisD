@@ -4,6 +4,7 @@ FROM python:3.10-slim
 RUN apt-get update && apt-get install -y \
     wget \
     unzip \
+    curl \
     fonts-liberation \
     libnss3 \
     libatk-bridge2.0-0 \
@@ -11,18 +12,22 @@ RUN apt-get update && apt-get install -y \
     libasound2 \
     libgbm1 \
     libgtk-3-0 \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Instala Playwright y sus navegadores
-RUN pip install playwright
-RUN playwright install --with-deps
-
-# Copia los archivos del proyecto
+# Crea y selecciona el directorio de trabajo
 WORKDIR /app
+
+# Copia todos los archivos del proyecto
 COPY . .
 
-# Instala dependencias Python del proyecto
+# Instala las dependencias de Python
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Comando para iniciar el bot
+# Instala los navegadores de Playwright mediante script externo
+COPY build.sh .
+RUN chmod +x build.sh && ./build.sh
+
+# Comando para ejecutar la aplicación
 CMD ["python", "main.py"]
