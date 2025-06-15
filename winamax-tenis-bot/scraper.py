@@ -1,5 +1,7 @@
 from playwright.sync_api import sync_playwright
 import re
+import os
+os.environ["PLAYWRIGHT_BROWSERS_PATH"] = "/opt/render/project/.playwright"
 
 def get_matches():
     with sync_playwright() as p:
