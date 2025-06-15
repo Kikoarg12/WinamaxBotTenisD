@@ -1,9 +1,10 @@
 services:
   - type: worker
-    name: winamax-tenis-bot
-    env: python
+    name: winamax-bot
+    runtime: python
+    region: frankfurt
+    plan: starter
     buildCommand: |
       pip install -r requirements.txt
-      playwright install chromium
+      playwright install
     startCommand: python main.py
-    region: frankfurt
