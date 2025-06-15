@@ -1,6 +1,6 @@
 FROM python:3.10-slim
 
-# Instala dependencias del sistema necesarias para Playwright
+# Instala dependencias necesarias del sistema para Playwright
 RUN apt-get update && apt-get install -y \
     wget \
     unzip \
@@ -13,15 +13,16 @@ RUN apt-get update && apt-get install -y \
     libgtk-3-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Instala Playwright y navegadores
-RUN pip install playwright && playwright install chromium
+# Instala Playwright y sus navegadores
+RUN pip install playwright
+RUN playwright install --with-deps
 
 # Copia los archivos del proyecto
 WORKDIR /app
 COPY . .
 
-# Instala dependencias Python
+# Instala dependencias Python del proyecto
 RUN pip install -r requirements.txt
 
-# Comando de ejecución
+# Comando para iniciar el bot
 CMD ["python", "main.py"]
